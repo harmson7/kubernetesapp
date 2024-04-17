@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-deployment
+  labels:
+    app: db
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - name: mysql
+          image: harmson/containersdb
+          volumes:
+            - mountPath: /var/lib/mysql
+              name: db-data 
+          ports:
+          - name: db-port
+            containerPort: 3306
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: appsecrets
+                  key: db-pass
+        
+      nodeSelector: 
+        zone: us-east-1a
+      volumes: 
+        - name: db-data
+          awsElasticBlockStore:
+            volumeID: vol-037b953b7e2bc5b84
+            fsType: ext4
+      initContainers:
+        - name: busybox
+          image: busybox:latest
+          args: ["rm", "-rf", "/var/lib/mysql/lost+found"]
+          volumeMounts: 
+            - mountPath: /var/lib/mysql
+              name: db-data
