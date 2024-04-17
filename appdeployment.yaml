@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: app-deployment
+  name: vproapp
   labels:
-    app: app
+    app: vproapp
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: app
+      app: vproapp
   template:
     metadata:
       labels:
-        app: app
+        app: vproapp
     spec:
       containers:
-        - name: tomcat
+        - name: vproapp
           image: harmson/containerapp
           ports:
           - name: app-port
@@ -24,7 +24,5 @@ spec:
       initContainers:
         - name: init-db
           image: busybox:latest
-          args: ["sh", "-c", "until nslookup vprodb; do echo wating for my db; donme;"]
-        - name: init-memcached
-          image: busybox:latest
-          args: ["sh", "-c", "until nslookup vprocache01; do echo wating for my db; donme;"]        
+          command: ["sh", "-c", "sleep 120"]
+

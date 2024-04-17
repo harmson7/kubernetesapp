@@ -3,23 +3,23 @@ kind: Deployment
 metadata:
   name: db-deployment
   labels:
-    app: db
+    app: vprodb
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: db
+      app: vprodb
   template:
     metadata:
       labels:
-        app: db
+        app: vprodb
     spec:
       containers:
-        - name: mysql
+        - name: containersdb
           image: harmson/containersdb
-          volumes:
+          volumeMounts:
             - mountPath: /var/lib/mysql
-              name: db-data 
+              name: db-data
           ports:
           - name: db-port
             containerPort: 3306
@@ -29,7 +29,6 @@ spec:
                 secretKeyRef:
                   name: appsecrets
                   key: db-pass
-        
       nodeSelector: 
         zone: us-east-1a
       volumes: 

@@ -12,7 +12,7 @@ spec:
   template:
     metadata:
       labels:
-        app: db
+        app: mq
     spec:
       containers:
         - name: rabbitmq
